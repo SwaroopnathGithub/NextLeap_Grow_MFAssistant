@@ -1,3 +1,11 @@
+# CPU-only torch build: plain `pip install torch` on Linux defaults to the
+# CUDA-bundled wheel (2GB+), which is unnecessary (no GPU on Render) and
+# was very likely the cause of the free-tier deploy hanging/crashing on
+# RAM. This pulls the much smaller CPU-only wheel instead - same model,
+# same results, just without the unused GPU code.
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch
+
 streamlit>=1.38
 chromadb>=0.5
 sentence-transformers>=3.0

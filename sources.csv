@@ -1,0 +1,17 @@
+id,source_type,publisher,scheme,covers,url,verified_2026-09-28
+1,Scheme page,HDFC MF,HDFC Large Cap Fund,"Expense ratio 1.03%, exit load, min SIP ₹100, riskometer Very High, benchmark NIFTY 100 TRI",https://www.hdfcfund.com/explore/mutual-funds/hdfc-large-cap-fund/direct,working - loaded and confirmed values
+2,Scheme page,HDFC MF,HDFC Flexi Cap Fund,"Expense ratio 0.77%, exit load, min SIP ₹100, riskometer Very High, benchmark NIFTY 500 TRI",https://www.hdfcfund.com/explore/mutual-funds/hdfc-flexi-cap-fund/direct,working - loaded and confirmed values
+3,Scheme page,HDFC MF,HDFC ELSS Tax Saver,"Expense ratio 1.21%, exit load NIL, min SIP ₹500, 3-year lock-in, riskometer Very High, benchmark NIFTY 500 TRI",https://www.hdfcfund.com/explore/mutual-funds/hdfc-elss-tax-saver/direct,working - loaded and confirmed values
+4,Scheme page,HDFC MF,HDFC Mid Cap Fund,"Expense ratio 0.76%, exit load, min SIP ₹100, riskometer Very High, benchmark NIFTY Midcap 150 TRI",https://www.hdfcfund.com/explore/mutual-funds/hdfc-mid-cap-fund/direct,working - loaded and confirmed values
+5,Scheme Information Document (SID),HDFC MF,HDFC Large Cap Fund,"Objective, asset allocation rules, loads, benchmark - official regulatory filing",https://files.hdfcfund.com/s3fs-public/SID/2025-05/SID%20-%20HDFC%20Large%20Cap%20Fund%20dated%20May%2030%2C%202025.pdf,PDF found via search - open once to confirm before submitting
+6,Scheme Information Document (SID),HDFC MF,HDFC ELSS Tax Saver,"3-year lock-in rule, Section 80C tax benefit, loads, benchmark - official regulatory filing",https://files.hdfcfund.com/s3fs-public/SID/2024-11/SID%20-%20HDFC%20ELSS%20Tax%20Saver%20Fund%20dated%20November%2021%2C%202024.pdf,PDF found via search - open once to confirm before submitting
+7,Service page,HDFC MF,All schemes,"How to download a consolidated account statement (PAN/folio + OTP flow)",https://www.hdfcfund.com/services/consolidated-account-statement,working - page loads with the statement request form
+8,AMC guide (blog),HDFC MF,All schemes,"How to download a capital-gains statement (4 methods: RTA, platform, AMC site, CAS)",https://www.hdfcfund.com/learn/blog/how-get-capital-gain-statement-mutual-fund-schemes-india,working - page loads with full explanation
+9,Investor education page,SEBI,All schemes,"What the riskometer is and how the 6 risk levels work - good grounding + safe link for advice refusals",https://investor.sebi.gov.in/riskometer.html,working - page loads with full explanation
+10,Regulatory circular,SEBI,All schemes,"Official rules on how Total Expense Ratio is calculated and disclosed",https://www.sebi.gov.in/legal/circulars/jun-2018/total-expense-ratio-for-mutual-funds_39187.html,working - page loads, circular confirmed
+
+Dropped from the original 22 (either duplicated a kept source, or the page loads but shows no static content - it's a JS-driven filter/search tool with no data visible without interaction, e.g. AMFI's TER and riskometer pages):
+- Regular-plan scheme pages (duplicate of direct-plan facts)
+- HDFC KIM index, factsheet index, request-statement, smart-statement FAQ, investor-services hub (all overlap with source #7 or #8)
+- SEBI riskometer product-labelling circular, riskometer/benchmark disclosure circular (overlap with source #10 and #9)
+- AMFI TER page, AMFI expense-ratio explainer, AMFI riskometer page, AMFI investor corner (loaded but showed only empty filter tools, no static facts to cite)

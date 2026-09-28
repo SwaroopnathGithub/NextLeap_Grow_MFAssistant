@@ -7,6 +7,7 @@ idempotent: running it twice in a row yields the same chunk count.
 from __future__ import annotations
 
 import json
+from functools import lru_cache
 from pathlib import Path
 
 import chromadb
@@ -21,7 +22,11 @@ COLLECTION_NAME = "mf_faq_chunks"
 _BATCH_SIZE = 100
 
 
+@lru_cache(maxsize=1)
 def get_client() -> chromadb.ClientAPI:
+    """Cached so a fresh PersistentClient (which opens the on-disk SQLite
+    backend) isn't created on every single query - one client is opened
+    once per process and reused, same pattern as embedder._get_model()."""
     CHROMA_DIR.mkdir(parents=True, exist_ok=True)
     return chromadb.PersistentClient(path=str(CHROMA_DIR))
 

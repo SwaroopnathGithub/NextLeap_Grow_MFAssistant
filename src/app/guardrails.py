@@ -10,9 +10,8 @@ import re
 from dataclasses import dataclass
 
 SEBI_RISKOMETER_URL = "https://investor.sebi.gov.in/riskometer.html"
-FACTSHEET_HINT = (
-    "the relevant scheme's official page on hdfcfund.com (Downloads > SID / Fund Facts)"
-)
+FACTSHEET_URL = "https://www.hdfcfund.com/explore/mutual-funds"
+FACTSHEET_HINT = f"the relevant scheme's official page on hdfcfund.com ({FACTSHEET_URL}) - see Downloads > SID / Fund Facts"
 
 PII_PATTERNS = [
     ("PAN", re.compile(r"\b[A-Z]{5}[0-9]{4}[A-Z]\b", re.IGNORECASE)),
@@ -98,7 +97,7 @@ def _check_performance(question: str) -> GuardrailResult | None:
         return GuardrailResult(
             outcome="REFUSE",
             reason="performance",
-            link=FACTSHEET_HINT,
+            link=FACTSHEET_URL,
             message=(
                 "I don't compute or compare fund returns or performance. For official "
                 f"performance figures, check {FACTSHEET_HINT}."

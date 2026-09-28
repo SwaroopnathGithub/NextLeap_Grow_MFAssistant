@@ -12,9 +12,10 @@ schemes: Large Cap, Flexi Cap, ELSS Tax Saver, Mid Cap.
 Full docs: [`docs/PRD.md`](docs/PRD.md) · [`docs/architecture.md`](docs/architecture.md) · [`docs/implementation.md`](docs/implementation.md)
 
 ## Status
-Phases 0-6 built and tested locally (ingestion, guardrails, retrieval, generation, UI).
-See `docs/implementation.md` for the phased build plan and `sample_qna.md` for real
-answers from the running app.
+Phases 0-6 built and tested locally (ingestion, guardrails, retrieval, generation, UI),
+pushed to GitHub. `render.yaml` is committed and ready; the actual Render deploy (an
+account-holder action) is the one remaining step. See `docs/implementation.md` for the
+phased build plan and `sample_qna.md` for real answers from the running app.
 
 ## Setup
 1. `pip install -r requirements.txt` (a virtualenv is recommended: `python -m venv .venv`)
@@ -28,6 +29,17 @@ answers from the running app.
 ### Running the tests
 `python -m pytest tests/ -q` — chunker and guardrail unit tests (11 cases total), no
 API key or network required.
+
+## Deploying to Render
+`render.yaml` in the repo root is a Render Blueprint with the build/start commands and
+`GROQ_MODEL` pre-filled:
+1. On [render.com](https://render.com), New > Blueprint, connect this GitHub repo.
+2. Render reads `render.yaml` and proposes the `groww-mf-facts-only-assistant` web
+   service. Confirm.
+3. It will prompt for the one `sync: false` env var: `GROQ_API_KEY`. Paste your key.
+4. Deploy. Build runs `pip install -r requirements.txt && python -m src.ingest.run`
+   (re-chunks and re-embeds from the committed `data/raw/`, no network fetch needed -
+   see "Known limits" below); start runs the Streamlit app bound to Render's `$PORT`.
 
 ## Known limits
 - **Static corpus.** The knowledge base is exactly the 10 sources in `sources.csv`,

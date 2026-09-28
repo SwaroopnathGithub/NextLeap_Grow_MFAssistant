@@ -107,10 +107,32 @@ def _is_short_line(line: str) -> bool:
     return len(stripped.split()) <= SHORT_LINE_MAX_WORDS
 
 
-def _structural_blocks(text: str) -> list[str]:
+def _drop_blanks_between_short_lines(lines: list[str]) -> list[str]:
+    """Real scraped scheme pages render each label/value as its own line
+    with a BLANK line between every one of them (e.g. "TER" / "" / "1.03"),
+    unlike the synthetic fixture this strategy was designed against. A
+    blank line flanked by two short lines is a label/value separator, not
+    a paragraph break, so it's dropped here before run-length grouping -
+    otherwise every label and every value ends up as its own 1-line chunk,
+    which is exactly the failure mode this chunking strategy exists to
+    avoid."""
+    out: list[str] = []
+    n = len(lines)
+    for i, line in enumerate(lines):
+        if line.strip():
+            out.append(line)
+            continue
+        prev_short = i > 0 and _is_short_line(lines[i - 1])
+        next_short = i + 1 < n and _is_short_line(lines[i + 1])
+        if prev_short and next_short:
+            continue  # drop this blank line, keep the run going
+        out.append(line)
+    return out
+
+
+def _structural_blocks_from_lines(lines: list[str]) -> list[str]:
     """Run-length group: contiguous short lines become one 'key facts'
     block; blank lines and long prose lines are paragraph boundaries."""
-    lines = [l for l in text.split("\n")]
     blocks: list[list[str]] = []
     current: list[str] = []
     current_is_short_run = False
@@ -152,9 +174,51 @@ def _fixed_window_split(text: str) -> list[str]:
     return windows
 
 
-def chunk_text(text: str) -> list[str]:
-    blocks = _structural_blocks(text)
-    final: list[str] = []
+# Known scheme-page label lines (case-insensitive) paired with the value on
+# the line right after them, once blank-line label/value separators have
+# been dropped. Used to emit compact single-fact chunks alongside the
+# broader "key facts" block: a block mixing 4-6 facts together dilutes its
+# embedding similarity to a single-fact question (e.g. "What is the TER of
+# X?") enough that it can miss a small top-k, even though the fact is
+# right there in the text - a short "<scheme> — <label>: <value>" sentence
+# embeds far closer to that question.
+KEY_FACT_LABELS = {
+    "ter": "TER (Expense Ratio)",
+    "exit load": "Exit Load",
+    "entry load": "Entry Load",
+    "min sip": "Minimum SIP",
+    "lock in": "Lock-in",
+    "riskometer": "Riskometer",
+    "benchmark": "Benchmark",
+}
+
+
+def _extract_key_fact_chunks(lines: list[str], scheme: str) -> list[str]:
+    """Scans the FULL line stream (not per-block) so a label like "Exit
+    Load" is still paired with its value even when that value is a long
+    prose sentence that structurally belongs to a different block (e.g.
+    "Exit Load" as a short heading line immediately followed by a full
+    sentence describing the load, rather than a short value line)."""
+    if not scheme:
+        return []
+    non_blank = [l.strip() for l in lines if l.strip()]
+    facts = []
+    for i, line in enumerate(non_blank[:-1]):
+        label = KEY_FACT_LABELS.get(line.lower())
+        if label is None:
+            continue
+        value = non_blank[i + 1]
+        if KEY_FACT_LABELS.get(value.lower()) is not None:
+            continue  # next line is itself a label, not a value
+        facts.append(f"{scheme} — {label}: {value}")
+    return facts
+
+
+def chunk_text(text: str, scheme: str = "") -> list[str]:
+    lines = _drop_blanks_between_short_lines(text.split("\n"))
+    key_facts = _extract_key_fact_chunks(lines, scheme)
+    blocks = _structural_blocks_from_lines(lines)
+    final: list[str] = list(key_facts)
     for block in blocks:
         final.extend(_fixed_window_split(block))
     return [b for b in final if b.strip()]
@@ -170,7 +234,7 @@ def run() -> list[Chunk]:
             continue
         raw_path = REPO_ROOT / record["raw_path"]
         text = raw_path.read_text(encoding="utf-8")
-        for piece in chunk_text(text):
+        for piece in chunk_text(text, scheme=record["scheme"]):
             chunks.append(
                 Chunk(
                     id=next_id,

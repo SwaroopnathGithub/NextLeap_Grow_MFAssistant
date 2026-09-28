@@ -1,0 +1,112 @@
+[
+  {
+    "id": "1",
+    "url": "https://www.hdfcfund.com/explore/mutual-funds/hdfc-large-cap-fund/direct",
+    "source_type": "Scheme page",
+    "scheme": "HDFC Large Cap Fund",
+    "covers": "Expense ratio 1.03%, exit load, min SIP \u20b9100, riskometer Very High, benchmark NIFTY 100 TRI",
+    "status": "ok",
+    "fetched_at": "2026-09-28T05:48:35.053948+00:00",
+    "raw_path": "data/raw/1.txt",
+    "error": ""
+  },
+  {
+    "id": "2",
+    "url": "https://www.hdfcfund.com/explore/mutual-funds/hdfc-flexi-cap-fund/direct",
+    "source_type": "Scheme page",
+    "scheme": "HDFC Flexi Cap Fund",
+    "covers": "Expense ratio 0.77%, exit load, min SIP \u20b9100, riskometer Very High, benchmark NIFTY 500 TRI",
+    "status": "ok",
+    "fetched_at": "2026-09-28T05:48:35.053948+00:00",
+    "raw_path": "data/raw/2.txt",
+    "error": ""
+  },
+  {
+    "id": "3",
+    "url": "https://www.hdfcfund.com/explore/mutual-funds/hdfc-elss-tax-saver/direct",
+    "source_type": "Scheme page",
+    "scheme": "HDFC ELSS Tax Saver",
+    "covers": "Expense ratio 1.21%, exit load NIL, min SIP \u20b9500, 3-year lock-in, riskometer Very High, benchmark NIFTY 500 TRI",
+    "status": "ok",
+    "fetched_at": "2026-09-28T05:48:35.053948+00:00",
+    "raw_path": "data/raw/3.txt",
+    "error": ""
+  },
+  {
+    "id": "4",
+    "url": "https://www.hdfcfund.com/explore/mutual-funds/hdfc-mid-cap-fund/direct",
+    "source_type": "Scheme page",
+    "scheme": "HDFC Mid Cap Fund",
+    "covers": "Expense ratio 0.76%, exit load, min SIP \u20b9100, riskometer Very High, benchmark NIFTY Midcap 150 TRI",
+    "status": "ok",
+    "fetched_at": "2026-09-28T05:48:35.053948+00:00",
+    "raw_path": "data/raw/4.txt",
+    "error": ""
+  },
+  {
+    "id": "5",
+    "url": "https://files.hdfcfund.com/s3fs-public/SID/2025-05/SID%20-%20HDFC%20Large%20Cap%20Fund%20dated%20May%2030%2C%202025.pdf",
+    "source_type": "Scheme Information Document (SID)",
+    "scheme": "HDFC Large Cap Fund",
+    "covers": "Objective, asset allocation rules, loads, benchmark - official regulatory filing",
+    "status": "ok",
+    "fetched_at": "2026-09-28T05:48:35.053948+00:00",
+    "raw_path": "data/raw/5.txt",
+    "error": ""
+  },
+  {
+    "id": "6",
+    "url": "https://files.hdfcfund.com/s3fs-public/SID/2024-11/SID%20-%20HDFC%20ELSS%20Tax%20Saver%20Fund%20dated%20November%2021%2C%202024.pdf",
+    "source_type": "Scheme Information Document (SID)",
+    "scheme": "HDFC ELSS Tax Saver",
+    "covers": "3-year lock-in rule, Section 80C tax benefit, loads, benchmark - official regulatory filing",
+    "status": "ok",
+    "fetched_at": "2026-09-28T05:48:35.053948+00:00",
+    "raw_path": "data/raw/6.txt",
+    "error": ""
+  },
+  {
+    "id": "7",
+    "url": "https://www.hdfcfund.com/services/consolidated-account-statement",
+    "source_type": "Service page",
+    "scheme": "All schemes",
+    "covers": "How to download a consolidated account statement (PAN/folio + OTP flow)",
+    "status": "ok",
+    "fetched_at": "2026-09-28T05:48:35.053948+00:00",
+    "raw_path": "data/raw/7.txt",
+    "error": ""
+  },
+  {
+    "id": "8",
+    "url": "https://www.hdfcfund.com/learn/blog/how-get-capital-gain-statement-mutual-fund-schemes-india",
+    "source_type": "AMC guide (blog)",
+    "scheme": "All schemes",
+    "covers": "How to download a capital-gains statement (4 methods: RTA, platform, AMC site, CAS)",
+    "status": "ok",
+    "fetched_at": "2026-09-28T05:48:35.053948+00:00",
+    "raw_path": "data/raw/8.txt",
+    "error": ""
+  },
+  {
+    "id": "9",
+    "url": "https://investor.sebi.gov.in/riskometer.html",
+    "source_type": "Investor education page",
+    "scheme": "All schemes",
+    "covers": "What the riskometer is and how the 6 risk levels work - good grounding + safe link for advice refusals",
+    "status": "ok",
+    "fetched_at": "2026-09-28T05:48:35.053948+00:00",
+    "raw_path": "data/raw/9.txt",
+    "error": ""
+  },
+  {
+    "id": "10",
+    "url": "https://www.sebi.gov.in/legal/circulars/jun-2018/total-expense-ratio-for-mutual-funds_39187.html",
+    "source_type": "Regulatory circular",
+    "scheme": "All schemes",
+    "covers": "Official rules on how Total Expense Ratio is calculated and disclosed",
+    "status": "ok",
+    "fetched_at": "2026-09-28T05:48:35.053948+00:00",
+    "raw_path": "data/raw/10.txt",
+    "error": ""
+  }
+]

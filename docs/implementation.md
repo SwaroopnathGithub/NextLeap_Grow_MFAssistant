@@ -8,7 +8,7 @@ Each phase has: what gets built, the files touched, and a done-when check, so a 
 **Build:**
 - Repo structure per architecture.md (`src/ingest/`, `src/app/`, `data/`, root files).
 - `requirements.txt` (streamlit, chromadb, sentence-transformers, groq, python-dotenv, pypdf or similar for PDF text, requests/beautifulsoup4 for HTML fetch).
-- `.env.example` with `GROQ_API_KEY=` and `GROQ_MODEL=llama-3.3-70b-versatile`.
+- `.env.example` with `GROQ_API_KEY=` and `GROQ_MODEL=openai/gpt-oss-120b`.
 - `.gitignore` excluding `.env`, `data/chroma/`, `__pycache__/`.
 - Copy `sources.csv` (the 10-source list) into the repo root.
 
@@ -60,7 +60,7 @@ Each phase has: what gets built, the files touched, and a done-when check, so a 
 
 ## Phase 5 — Generation (LLM)
 **Build:**
-- `src/app/generate.py`: builds the system prompt (answer only from provided chunks; ≤3 sentences; cite exactly one source URL from the top chunk; append "Last updated from sources: <date>"; say so plainly if the chunks don't answer the question), calls Groq (`llama-3.3-70b-versatile`) with the question + retrieved chunks + last-10-turn memory, and returns the formatted answer.
+- `src/app/generate.py`: builds the system prompt (answer only from provided chunks; ≤3 sentences; cite exactly one source URL from the top chunk; append "Last updated from sources: <date>"; say so plainly if the chunks don't answer the question), calls Groq (`openai/gpt-oss-120b`) with the question + retrieved chunks + last-10-turn memory, and returns the formatted answer.
 - Wires guardrails (Phase 3) → retriever (Phase 4) → generation into one function, `answer_question()`, used by the UI.
 - Conversation memory: a simple rolling list of the last 10 (question, answer) pairs, passed as context but never bypassing the guardrail check on each new message.
 

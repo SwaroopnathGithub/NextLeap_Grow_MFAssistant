@@ -52,6 +52,6 @@ Build a RAG chatbot that answers factual questions about a small set of HDFC mut
 - **Sources:** exactly the 10-URL corpus already verified (4 HDFC scheme pages, 2 SID PDFs, HDFC statement page, HDFC capital-gains guide, SEBI riskometer page, SEBI TER circular). No blogs, no third-party sites.
 - **No PII:** never accept, store, or log PAN, Aadhaar, account numbers, OTPs, emails, or phone numbers; detect and refuse before the query reaches the LLM.
 - **No performance claims:** never compute or compare returns; redirect to the official factsheet.
-- **Stack is fixed:** Python, sentence-transformers/all-MiniLM-L6-v2 embeddings, ChromaDB (persisted to disk), Groq LLM (`llama-3.3-70b-versatile`), Streamlit UI, hosted on Render. Secrets in `.env`, never committed.
+- **Stack is fixed:** Python, sentence-transformers/all-MiniLM-L6-v2 embeddings, ChromaDB (persisted to disk), Groq LLM (`openai/gpt-oss-120b`), Streamlit UI, hosted on Render. Secrets in `.env`, never committed.
 - **Deliverables:** working prototype link, 10-source list (CSV/MD), README (setup, scope, known limits), sample Q&A file (5–10 queries with answers and links), disclaimer snippet — all in a public GitHub repo.
 - **Timeline:** submit by Oct 2, 2026, 11:59 PM IST.

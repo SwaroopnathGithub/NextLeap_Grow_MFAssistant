@@ -73,7 +73,7 @@ This keeps refusals deterministic and cheap (no LLM cost on out-of-scope questio
 - If the best match's similarity is below a set threshold, treat as **low-confidence**: skip the LLM and return an "I don't have that in my sources" message with a link to the relevant scheme page, rather than let the LLM guess.
 
 ### 2.7 LLM answer generation (`src/app/generate.py`)
-- Provider: Groq API, model `llama-3.3-70b-versatile` (key from `.env` → `GROQ_API_KEY`, model id from `.env` → `GROQ_MODEL`, never hardcoded, never committed).
+- Provider: Groq API, model `openai/gpt-oss-120b` (key from `.env` → `GROQ_API_KEY`, model id from `.env` → `GROQ_MODEL`, never hardcoded, never committed).
 - System prompt encodes: answer only from provided chunks; ≤3 sentences; cite exactly one source URL (the top retrieved chunk's `source_url`); end with "Last updated from sources: <fetched_at of that chunk>"; if the chunks don't contain the answer, say so instead of guessing.
 - Conversation memory: last 10 turns kept and passed as context (per the session's instruction), so follow-up questions ("what about its exit load?") resolve correctly, but memory never overrides the guardrail check, which runs fresh on every new message.
 
@@ -113,7 +113,7 @@ groww-mf-faq-assistant/
 ├── sources.csv                # the 10-source list
 ├── sample_qna.md               # 5-10 sample Q&A with answers + links (deliverable)
 ├── requirements.txt
-├── .env.example                # GROQ_API_KEY=, GROQ_MODEL=llama-3.3-70b-versatile
+├── .env.example                # GROQ_API_KEY=, GROQ_MODEL=openai/gpt-oss-120b
 ├── .gitignore                  # .env, data/chroma/
 └── README.md
 ```

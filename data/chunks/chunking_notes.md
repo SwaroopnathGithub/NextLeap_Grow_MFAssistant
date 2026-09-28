@@ -48,10 +48,28 @@ Against a synthetic fixture shaped exactly like a real HDFC scheme page:
 - A long, blank-line-free prose block correctly falls back to fixed-size
   overlapping windows.
 
-## Known limitation
-This strategy was designed and unit-tested against a **realistic synthetic
-fixture**, not yet against the live-fetched real pages, because this
-session's network access currently blocks hdfcfund.com and sebi.gov.in
-directly (see project chat). Once network access is widened and
-`python -m src.ingest.loader` runs for real, `chunks.txt` should be
-manually spot-checked against this same checklist before moving to Phase 2.
+## Update: validated against the real fetched sources (2026-09-28)
+All 10 sources were fetched from a local machine (browser pane for the
+HTML pages that block direct HTTP requests; direct `curl` for the 2 SID
+PDFs and the SEBI TER circular PDF) and run through the real pipeline.
+
+**PDF extraction fix required:** `pypdf`'s raw `page.extract_text()`
+returns one line per *visual* line in the PDF layout, not per sentence.
+Feeding that directly into the structural chunker produced ~1040 tiny
+chunks per 74-page SID (avg 180 chars, many just a page number or a
+2-3 word label) because nearly every PDF line looked like a "short
+line" and was separated from its neighbours by blank lines. Fixed by
+adding a line-joining pass before chunking: consecutive PDF lines are
+merged into a paragraph unless the previous line ends in `.`/`:`/`;`
+or the next line starts with a bullet/number marker. This dropped the
+two SIDs from ~1040 chunks each to ~433/432 (avg chunk length 377
+chars), which now read as real paragraphs/fact-blocks instead of
+single-line fragments.
+
+**Final counts by source (1259 chunks total):** the 4 scheme pages
+(64-91 chunks each) chunk cleanly into their key-facts blocks; the two
+SIDs (~433 each) now read as proper paragraphs; the remaining sources
+(HDFC statement page, capital-gains guide, SEBI riskometer, SEBI TER
+circular) are 10-44 chunks each of ordinary prose. Spot-checked
+manually against the checklist above (facts not merged, labels stay
+with values, no TER/Riskometer false-positive) — passes.

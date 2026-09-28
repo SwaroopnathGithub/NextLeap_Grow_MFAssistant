@@ -118,11 +118,25 @@ groww-mf-faq-assistant/
 └── README.md
 ```
 
-## 5. Deployment (Render)
-- **Build command:** `pip install -r requirements.txt && python -m src.ingest.run`
-- **Start command:** `python -m streamlit run src/app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true`
-- Env vars set in Render's dashboard (not in the repo): `GROQ_API_KEY`, `GROQ_MODEL`.
-- Because ingestion runs at build time, the persisted `data/chroma/` is rebuilt fresh on every deploy — acceptable at this scale (10 sources) and keeps the corpus always in sync with `sources.csv`.
+## 5. Deployment
+Two hosting paths, both documented in the README:
+- **Streamlit Community Cloud (recommended):** no custom build-command hook available
+  (only `pip install -r requirements.txt`, then the app starts directly), so
+  `src/app.py` checks the vector store on load and self-builds it (chunk + embed) if
+  empty, cached with `@st.cache_resource` so it only runs once per process. 1 GB RAM
+  on its free tier, vs. 512 MB on Render's - meaningfully more headroom for
+  torch/sentence-transformers/chromadb.
+- **Render (alternative):** `render.yaml` Blueprint with build command
+  `pip install -r requirements.txt && python -m src.ingest.run` and start command
+  `python -m streamlit run src/app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true`.
+  In testing, Render's free tier (512 MB RAM) reached "Live" but then 502'd on real
+  requests even after pinning the CPU-only torch build - most likely a RAM ceiling once
+  the embedding model and vector store actually load. Works fine on a paid Render tier
+  with more memory.
+- Env vars (either host, not in the repo): `GROQ_API_KEY`, `GROQ_MODEL`.
+- `data/chroma/` is gitignored and rebuilt from the committed `data/raw/` + `sources.csv`
+  on first run/build, keeping the corpus in sync with `sources.csv` without needing
+  network access at deploy time.
 
 ## 6. How this maps to the PRD's success criteria
 | PRD success criterion | Architecture mechanism |
@@ -131,5 +145,5 @@ groww-mf-faq-assistant/
 | Answer vs. refuse judgement | Deterministic guardrail classifier runs before retrieval/LLM, independent of model behavior. |
 | Format compliance (≤3 sentences, "Last updated" line) | Enforced in the system prompt given to the LLM at generation time. |
 | No hallucinated facts | Low-confidence retrieval short-circuits to an "I don't know" response instead of reaching the LLM with weak context. |
-| Working hosted prototype | Render deployment with fixed build/start commands, one-time ingestion at build. |
+| Working hosted prototype | Streamlit Community Cloud (or Render) deployment; the app self-builds its index on first run if needed, so it works without a host-specific build hook. |
 | Reproducible by a grader | `.env.example`, `requirements.txt`, and README setup steps are all committed. |

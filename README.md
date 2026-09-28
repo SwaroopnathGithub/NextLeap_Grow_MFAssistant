@@ -13,9 +13,12 @@ Full docs: [`docs/PRD.md`](docs/PRD.md) · [`docs/architecture.md`](docs/archite
 
 ## Status
 Phases 0-6 built and tested locally (ingestion, guardrails, retrieval, generation, UI),
-pushed to GitHub. `render.yaml` is committed and ready; the actual Render deploy (an
-account-holder action) is the one remaining step. See `docs/implementation.md` for the
-phased build plan and `sample_qna.md` for real answers from the running app.
+pushed to GitHub. The app also self-builds its vector index on first run if it's
+missing, so it works on hosts without a custom build-command hook (see "Deploying to
+Streamlit Community Cloud" below). Render's free tier hit a likely RAM ceiling in
+testing; Streamlit Community Cloud (more RAM on its free tier) is the recommended
+deploy target. See `docs/implementation.md` for the phased build plan and
+`sample_qna.md` for real answers from the running app.
 
 ## Setup
 1. `pip install -r requirements.txt` (a virtualenv is recommended: `python -m venv .venv`)
@@ -30,7 +33,28 @@ phased build plan and `sample_qna.md` for real answers from the running app.
 `python -m pytest tests/ -q` — chunker and guardrail unit tests (11 cases total), no
 API key or network required.
 
-## Deploying to Render
+## Deploying to Streamlit Community Cloud (recommended)
+Streamlit Community Cloud is purpose-built for this stack and gives 1 GB RAM on its
+free tier (vs. 512 MB on Render's free tier, which this app's dependencies -
+torch/sentence-transformers/chromadb - can struggle to fit in):
+1. On [share.streamlit.io](https://share.streamlit.io), sign in with GitHub, click
+   "New app", and select this repo/branch.
+2. Set "Main file path" to `src/app.py`.
+3. Under "Advanced settings" > Secrets, paste:
+   ```
+   GROQ_API_KEY = "your-key-here"
+   GROQ_MODEL = "openai/gpt-oss-120b"
+   ```
+   Secrets set here are automatically available as environment variables in the app
+   (no code change needed - `os.environ.get(...)` picks them up directly).
+4. Deploy. Unlike Render, Streamlit Cloud has no custom build-command hook - it only
+   runs `pip install -r requirements.txt` and starts the app directly. So `src/app.py`
+   checks the vector store on first load and builds it itself if empty (chunks +
+   embeds from the already-committed `data/raw/`, no network fetch needed), showing a
+   one-time "Setting up..." spinner (~20-30s) before the chat UI appears. Subsequent
+   loads in the same running instance skip straight to the chat UI.
+
+## Deploying to Render (alternative)
 `render.yaml` in the repo root is a Render Blueprint with the build/start commands and
 `GROQ_MODEL` pre-filled:
 1. On [render.com](https://render.com), New > Blueprint, connect this GitHub repo.
@@ -40,6 +64,12 @@ API key or network required.
 4. Deploy. Build runs `pip install -r requirements.txt && python -m src.ingest.run`
    (re-chunks and re-embeds from the committed `data/raw/`, no network fetch needed -
    see "Known limits" below); start runs the Streamlit app bound to Render's `$PORT`.
+
+Note: in testing, Render's free tier (512 MB RAM) had the app build and reach "Live"
+status but then 502 on real requests, most likely from running out of memory once the
+embedding model and vector store are actually loaded - even after pinning the
+CPU-only torch build (see `requirements.txt`) to shrink the footprint. If you hit the
+same thing, Streamlit Community Cloud's 1 GB free tier is the recommended fallback.
 
 ## Known limits
 - **Static corpus.** The knowledge base is exactly the 10 sources in `sources.csv`,

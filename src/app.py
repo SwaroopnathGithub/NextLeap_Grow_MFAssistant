@@ -21,6 +21,27 @@ load_dotenv(REPO_ROOT / ".env")
 from src.app.generate import Turn  # noqa: E402
 from src.app.pipeline import answer_question  # noqa: E402
 
+
+@st.cache_resource(show_spinner="Setting up (first run only, builds the search index)...")
+def _ensure_index_built() -> int:
+    """Some hosts (e.g. Streamlit Community Cloud) run only `pip install -r
+    requirements.txt` and start the app directly - there's no equivalent of
+    Render's custom buildCommand to run ingestion first. So the app checks
+    the vector store on first load and builds it here if it's empty,
+    reusing the already-fetched data/raw/ and sources.csv (no network
+    fetch needed - see src/ingest/run.py). @st.cache_resource makes this
+    run at most once per process, not on every script rerun."""
+    from src.ingest import chunker, store
+
+    collection = store.get_collection()
+    if collection.count() > 0:
+        return collection.count()
+    chunker.run()
+    return store.rebuild_from_chunks()
+
+
+_ensure_index_built()
+
 DISCLAIMER = "Facts-only. No investment advice."
 
 EXAMPLE_QUESTIONS = [
